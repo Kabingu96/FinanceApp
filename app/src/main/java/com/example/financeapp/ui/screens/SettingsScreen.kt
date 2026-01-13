@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +24,8 @@ import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -87,7 +88,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         checked = isDarkMode,
                         onCheckedChange = { viewModel.setDarkMode(it) }
                     )
-                    Divider()
+                    HorizontalDivider()
                     SettingsSwitchItem(
                         title = "Dynamic Colors",
                         subtitle = "Use wallpaper colors (Android 12+)",
@@ -133,7 +134,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         icon = Icons.Outlined.SaveAlt,
                         onClick = { Toast.makeText(context, "Exporting data... (Simulation)", Toast.LENGTH_SHORT).show() }
                     )
-                    Divider()
+                    HorizontalDivider()
                     SettingsClickableItem(
                         title = "Clear All Data",
                         subtitle = "This cannot be undone",
@@ -160,7 +161,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
 }
 
 @Composable
-private fun SettingsCard(title: String, content: @Composable Column.() -> Unit) {
+private fun SettingsCard(title: String, content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(2.dp),
@@ -233,7 +234,10 @@ private fun SettingsSwitchItem(
         leadingContent = { Icon(icon, contentDescription = null) },
         trailingContent = { Switch(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled) },
         modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) },
-        colors = if (!enabled) ListItemDefaults.colors(disabledColor = colorScheme.onSurface.copy(alpha = 0.38f)) else ListItemDefaults.colors()
+        colors = if (!enabled) ListItemDefaults.colors(
+            disabledHeadlineColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            disabledLeadingIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        ) else ListItemDefaults.colors()
     )
 }
 
@@ -245,7 +249,7 @@ private fun SettingsClickableItem(
     isDestructive: Boolean = false,
     onClick: () -> Unit
 ) {
-    val itemColor = if (isDestructive) colorScheme.error else colorScheme.onSurface
+    val itemColor = if (isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
     ListItem(
         headlineContent = { Text(text = title, color = itemColor) },
         supportingContent = if (subtitle != null) { { Text(subtitle) } } else null,
@@ -253,7 +257,7 @@ private fun SettingsClickableItem(
             Icon(
                 icon, 
                 contentDescription = null,
-                tint = if (isDestructive) itemColor else colorScheme.onSurfaceVariant
+                tint = if (isDestructive) itemColor else MaterialTheme.colorScheme.onSurfaceVariant
             ) 
         },
         modifier = Modifier.clickable(onClick = onClick)
