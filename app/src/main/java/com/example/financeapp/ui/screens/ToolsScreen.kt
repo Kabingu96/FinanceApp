@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
-import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material3.Card
@@ -35,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,6 +41,8 @@ import com.example.financeapp.data.model.DebtEntity
 import com.example.financeapp.data.model.SavingsGoalEntity
 import com.example.financeapp.ui.viewmodel.FinancialToolsViewModel
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,10 +73,10 @@ fun ToolsScreen(viewModel: FinancialToolsViewModel = viewModel()) {
                     shape = MaterialTheme.shapes.large
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        SectionHeader("Debt Tracker")
+                        Text("Debt Tracker", style = MaterialTheme.typography.titleLarge)
                         Spacer(modifier = Modifier.height(12.dp))
                         if (debts.isEmpty()) {
-                            EmptyStateMessage("No debts recorded.")
+                            Text("No debts recorded.", style = MaterialTheme.typography.bodyMedium)
                         } else {
                             debts.forEach { debt ->
                                 DebtItem(debt)
@@ -93,10 +94,10 @@ fun ToolsScreen(viewModel: FinancialToolsViewModel = viewModel()) {
                     shape = MaterialTheme.shapes.large
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        SectionHeader("Savings Goals")
+                        Text("Savings Goals", style = MaterialTheme.typography.titleLarge)
                         Spacer(modifier = Modifier.height(12.dp))
                         if (savingsGoals.isEmpty()) {
-                            EmptyStateMessage("No savings goals set.")
+                            Text("No savings goals set.", style = MaterialTheme.typography.bodyMedium)
                         } else {
                             savingsGoals.forEach { goal ->
                                 SavingsGoalItem(goal)
@@ -114,7 +115,7 @@ fun ToolsScreen(viewModel: FinancialToolsViewModel = viewModel()) {
                     shape = MaterialTheme.shapes.large
                 ) {
                     Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                        SectionHeader(title = "More Tools", modifier = Modifier.padding(start = 16.dp, top = 8.dp))
+                        Text("More Tools", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(start = 16.dp, top = 8.dp))
                         ComingSoonToolItem("Currency Converter", "Real-time currency conversion", Icons.Outlined.AccountBalanceWallet)
                         ComingSoonToolItem("Bill Reminders", "Get notified for upcoming bills", Icons.Outlined.Receipt)
                         ComingSoonToolItem("Smart Suggestions", "ML-based spending insights", Icons.Outlined.Lightbulb)
@@ -138,7 +139,7 @@ private fun DebtItem(debt: DebtEntity) {
         Column {
             Text(debt.name, fontWeight = FontWeight.Medium)
             Text(
-                "Due: ${java.text.SimpleDateFormat("dd/MM/yyyy").format(java.util.Date(debt.dueDate))}",
+                "Due: ${SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(java.util.Date(debt.dueDate))}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -179,7 +180,6 @@ private fun ComingSoonToolItem(title: String, subtitle: String, icon: ImageVecto
         headlineContent = { Text(title) },
         supportingContent = { Text(subtitle) },
         leadingContent = { Icon(icon, contentDescription = null) },
-        colors = ListItemDefaults.colors(disabledColor = MaterialTheme.colorScheme.onSurfaceVariant)
+        colors = ListItemDefaults.colors(disabledHeadlineColor = MaterialTheme.colorScheme.onSurfaceVariant)
     )
 }
-
